@@ -1,29 +1,42 @@
 import { ServiceNode } from "@/types/node";
 import { Metrics } from "@/types/metrics";
 
-export function simulate(
-  nodes: ServiceNode[],
-  traffic: number
-): Metrics {
+export function simulate(nodes: ServiceNode[], traffic: number) {
   let overloaded = 0;
 
-  const updated = nodes.map((node) => {
-    const load = traffic;
+  const updatedNodes = nodes.map((node) => {
+    let effectiveLoad = traffic;
 
-    if (load > node.capacity) {
-      overloaded++;
-      return { ...node, load, status: "overloaded" };
+    if (node.type === "database") {
+      const cacheExists = nodes.some((n) => n.type === "cache");
+      if (cacheExists) {
+        effectiveLoad = traffic * 0.4;
+      }
     }
 
-    return { ...node, load, status: "healthy" };
+    if (node.type === "loadbalancer") {
+      effectiveLoad = traffic / nodes.length;
+    }
+
+    const status = effectiveLoad > node.capacity ? "overloaded" : "healthy";
+
+    if (status === "overloaded") overloaded++;
+
+    return {
+      ...node,
+      load: Math.round(effectiveLoad),
+      status,
+    };
   });
 
-  const totalLatency = traffic * 0.05;
-  const errorRate = overloaded > 0 ? overloaded * 5 : 0;
+  const metrics: Metrics = {
+    totalLatency: traffic * 0.05 + overloaded * 20,
+    errorRate: overloaded > 0 ? overloaded * 5 : 0,
+    overloadedNodes: overloaded,
+  };
 
   return {
-    totalLatency,
-    errorRate,
-    overloadedNodes: overloaded,
+    nodes: updatedNodes,
+    metrics,
   };
 }

@@ -1,11 +1,15 @@
 "use client";
 
 import { useSystemStore } from "@/store/useSystemStore";
+import { useSimulation } from "@/hooks/useSimulation";
 import { v4 as uuid } from "uuid";
 import { ServiceType } from "@/types/node";
 
 export default function Canvas() {
   const { nodes, addNode } = useSystemStore();
+  const simulation = useSimulation();
+
+  const displayNodes = simulation.nodes ?? nodes;
 
   const createNode = (type: ServiceType) => {
     const capacities: Record<ServiceType, number> = {
@@ -46,13 +50,23 @@ export default function Canvas() {
         </button>
       </div>
 
-      <div className="space-y-2">
-        {nodes.map((node) => (
+      <div className="space-y-3">
+        {displayNodes.map((node) => (
           <div
             key={node.id}
-            className={`p-3 bg-zinc-800 rounded border-2 ${getColor(node.status)}`}
+            className={`p-4 bg-zinc-800 rounded border-2 ${getColor(node.status)}`}
           >
-            {node.type.toUpperCase()} | Capacity: {node.capacity}
+            <div className="font-semibold">{node.type.toUpperCase()}</div>
+
+            <div className="text-sm text-zinc-300">
+              Load: {node.load} / {node.capacity}
+            </div>
+
+            {node.status === "overloaded" && (
+              <div className="text-red-400 text-sm mt-1">
+                ⚠ Overloaded
+              </div>
+            )}
           </div>
         ))}
       </div>
