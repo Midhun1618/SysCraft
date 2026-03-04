@@ -1,20 +1,13 @@
 "use client";
 
 import React, { useCallback } from "react";
-import ReactFlow, {
-  addEdge,
-  Background,
-  Controls,
-  MiniMap,
-  useNodesState,
-  useEdgesState,
-  Connection,
-  Edge,
-} from "reactflow";
-
-import ServiceNode from "./ServiceNode";
-
+import { useEffect } from "react";
 import "reactflow/dist/style.css";
+import ReactFlow, { addEdge,  Background,  Controls,  MiniMap,  useNodesState, useEdgesState, Connection, Edge,} from "reactflow";
+import ServiceNode from "./ServiceNode";
+import { useSystemStore } from "@/store/useSystemStore";
+import { simulate } from "@/lib/simulation";
+
 
 const nodeTypes = {
   serviceNode: ServiceNode,
@@ -29,31 +22,52 @@ export default function Canvas() {
       setEdges((eds) => addEdge(params, eds)),
     []
   );
+  const { traffic, setNodes: setStoreNodes } = useSystemStore();
 
-  const addNode = (type: string) => {
-    const id = (nodes.length + 1).toString();
+const capacities: Record<string, number> = {
+  api: 1000,
+  database: 500,
+  cache: 2000,
+  loadbalancer: 3000,
+  queue: 1500,
+};
 
-    setNodes([
-      ...nodes,
-      {
-        id,
-        type: "serviceNode",
-        position: {
-          x: Math.random() * 400,
-          y: Math.random() * 400,
-        },
-        data: {
-          label: type.toUpperCase(),
-          type,
-        },
+const addNode = (type: string) => {
+  const id = (nodes.length + 1).toString();
+
+  setNodes([
+    ...nodes,
+    {
+      id,
+      type: "serviceNode",
+      position: {
+        x: Math.random() * 400,
+        y: Math.random() * 400,
       },
-    ]);
-  };
+      data: {
+        label: type.toUpperCase(),
+        type,
+        capacity: capacities[type],
+        load: 0,
+      },
+    },
+  ]);
+};
+
+useEffect(() => {
+
+  if (nodes.length === 0) return;
+
+  const result = simulate(nodes, traffic);
+
+  setNodes(result.nodes);       // ReactFlow nodes
+  setStoreNodes(result.nodes);  // Zustand store nodes
+
+}, [traffic]);
 
   return (
     <div className="w-full h-full relative">
 
-      {/* Node Creation Buttons */}
       <div className="absolute z-10 top-4 left-4 flex gap-2 flex-wrap">
 
         <button
@@ -81,7 +95,7 @@ export default function Canvas() {
           onClick={() => addNode("loadbalancer")}
           className="bg-green-600 text-white px-3 py-1 rounded"
         >
-          LB
+          Load Balancer
         </button>
 
         <button

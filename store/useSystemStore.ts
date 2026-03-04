@@ -8,6 +8,7 @@ interface SystemState {
   traffic: number;
 
   addNode: (node: ServiceNode) => void;
+  setNodes: (nodes: ServiceNode[]) => void;   // ⭐ add this
   setTraffic: (value: number) => void;
   connectNodes: (from: string, to: string) => void;
 }
@@ -19,6 +20,8 @@ export const useSystemStore = create<SystemState>((set) => ({
 
   addNode: (node) =>
     set((state) => ({ nodes: [...state.nodes, node] })),
+
+  setNodes: (nodes) => set({ nodes }),   // ⭐ add this
 
   setTraffic: (value) => set({ traffic: value }),
 

@@ -1,12 +1,10 @@
 # SysCraft
 
 **SysCraft** is an interactive web-based system architecture simulator that allows users to design microservice architectures using drag-and-drop nodes and simulate system performance under varying traffic conditions.
-
 The application helps visualize how different services such as APIs, databases, caches, and load balancers interact within a distributed system.
 
----
 
-## 🚀 Features
+## Features
 
 * Drag-and-drop architecture design using **React Flow**
 * Create and connect different service types:
@@ -16,6 +14,7 @@ The application helps visualize how different services such as APIs, databases, 
   * Cache Layers
   * Load Balancers
   * Message Queues
+
 * Interactive node connections to represent service dependencies
 * Real-time system simulation based on traffic load
 * System health monitoring (latency, error rate, overloaded nodes)
@@ -24,15 +23,15 @@ The application helps visualize how different services such as APIs, databases, 
 
 ---
 
-## 🏗 Architecture
+## Architecture
 
 SysCraft is structured into three main layers:
 
-### 1️⃣ Visual Architecture Layer
+### Visual Architecture Layer
 
 Users create system designs using draggable service nodes and connect them to model distributed architectures.
 
-### 2️⃣ Simulation Engine
+### Simulation Engine
 
 A TypeScript-based simulation engine evaluates system performance by calculating:
 
@@ -41,13 +40,13 @@ A TypeScript-based simulation engine evaluates system performance by calculating
 * Latency
 * Error rates
 
-### 3️⃣ Metrics Dashboard
+### Metrics Dashboard
 
 A real-time dashboard visualizes system health and performance metrics using data charts.
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 **Frontend**
 
@@ -84,37 +83,15 @@ These metrics update dynamically as users modify architecture or traffic levels.
 
 ## ⚙️ Installation
 
-Clone the repository:
+Clone the repository: git clone https://github.com/your-username/syscraft.git
 
-```bash
-git clone https://github.com/your-username/syscraft.git
-```
+Navigate into the project,
 
-Navigate into the project:
+Install dependencies: npm install
 
-```bash
-cd syscraft
-```
+Run the development server: npm run dev
 
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run the development server:
-
-```bash
-npm run dev
-```
-
-Open the app in your browser:
-
-```
-http://localhost:3000
-```
-
----
+Open the app in your browser: http://localhost:3000
 
 ## 🎮 How to Use
 
@@ -124,41 +101,9 @@ http://localhost:3000
 4. Adjust traffic using the control slider.
 5. Observe system metrics and performance charts.
 
----
 
-## 📌 Example Architecture
-
-```
-Load Balancer
-      │
-      ▼
-     API
-      │
- ┌────┴────┐
- ▼         ▼
-Cache     Queue
-  │
-  ▼
-Database
-```
-
----
-
-## 📈 Future Improvements
-
-* Edge-based traffic flow simulation
-* Save and share architecture designs
-* AI-based system design suggestions
-* Performance comparison between architectures
-* Deployment simulation
-
----
 
 ## 👨‍💻 Author
 
 **Midhun KP**
-
-Computer Science Engineering Student
-Interested in building intelligent developer tools and scalable systems.
-
 GitHub: https://github.com/Midhun1618
