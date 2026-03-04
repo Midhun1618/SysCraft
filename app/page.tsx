@@ -6,14 +6,19 @@ import TrafficControl from "@/components/dashboard/TrafficControl";
 
 export default function Home() {
   return (
-    <main className="flex h-screen">
-      <div className="w-2/3 border-r border-zinc-700">
+    <main className="grid grid-cols-3 h-screen">
+
+      {/* Architecture Canvas */}
+      <div className="col-span-2 border-r border-zinc-700 overflow-auto">
         <Canvas />
       </div>
-      <div className="w-1/3 p-4 space-y-4">
+
+      {/* Dashboard */}
+      <div className="p-6 space-y-6 bg-zinc-900 overflow-auto">
         <TrafficControl />
         <MetricsPanel />
       </div>
+
     </main>
   );
 }
