@@ -1,5 +1,5 @@
 import { ServiceNode } from "@/types/node";
-import { Metrics } from "@/types/metrics";
+import { Metrics } from "@/types/metric";
 
 export function simulate(nodes: ServiceNode[], traffic: number) {
   let overloaded = 0;
