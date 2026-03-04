@@ -1,75 +1,112 @@
 "use client";
 
-import { useSystemStore } from "@/store/useSystemStore";
-import { useSimulation } from "@/hooks/useSimulation";
-import { v4 as uuid } from "uuid";
-import { ServiceType } from "@/types/node";
+import React, { useCallback } from "react";
+import ReactFlow, {
+  addEdge,
+  Background,
+  Controls,
+  MiniMap,
+  useNodesState,
+  useEdgesState,
+  Connection,
+  Edge,
+} from "reactflow";
+
+import ServiceNode from "./ServiceNode";
+
+import "reactflow/dist/style.css";
+
+const nodeTypes = {
+  serviceNode: ServiceNode,
+};
 
 export default function Canvas() {
-  const { nodes, addNode } = useSystemStore();
-  const simulation = useSimulation();
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  const displayNodes = simulation.nodes ?? nodes;
+  const onConnect = useCallback(
+    (params: Edge | Connection) =>
+      setEdges((eds) => addEdge(params, eds)),
+    []
+  );
 
-  const createNode = (type: ServiceType) => {
-    const capacities: Record<ServiceType, number> = {
-      api: 1000,
-      database: 500,
-      cache: 2000,
-      loadbalancer: 3000,
-      queue: 1500,
-    };
+  const addNode = (type: string) => {
+    const id = (nodes.length + 1).toString();
 
-    addNode({
-      id: uuid(),
-      type,
-      capacity: capacities[type],
-      load: 0,
-    });
-  };
-
-  const getColor = (status?: string) => {
-    if (status === "overloaded") return "border-red-500";
-    return "border-green-500";
+    setNodes([
+      ...nodes,
+      {
+        id,
+        type: "serviceNode",
+        position: {
+          x: Math.random() * 400,
+          y: Math.random() * 400,
+        },
+        data: {
+          label: type.toUpperCase(),
+          type,
+        },
+      },
+    ]);
   };
 
   return (
-    <div className="p-4">
-      <div className="flex gap-2 mb-4 flex-wrap">
-        <button onClick={() => createNode("api")} className="bg-blue-600 px-3 py-1 rounded">
-          Add API
+    <div className="w-full h-full relative">
+
+      {/* Node Creation Buttons */}
+      <div className="absolute z-10 top-4 left-4 flex gap-2 flex-wrap">
+
+        <button
+          onClick={() => addNode("api")}
+          className="bg-blue-600 text-white px-3 py-1 rounded"
+        >
+          API
         </button>
-        <button onClick={() => createNode("database")} className="bg-purple-600 px-3 py-1 rounded">
-          Add DB
+
+        <button
+          onClick={() => addNode("database")}
+          className="bg-purple-600 text-white px-3 py-1 rounded"
+        >
+          DB
         </button>
-        <button onClick={() => createNode("cache")} className="bg-yellow-600 px-3 py-1 rounded">
-          Add Cache
+
+        <button
+          onClick={() => addNode("cache")}
+          className="bg-yellow-500 text-black px-3 py-1 rounded"
+        >
+          Cache
         </button>
-        <button onClick={() => createNode("loadbalancer")} className="bg-green-600 px-3 py-1 rounded">
-          Add LB
+
+        <button
+          onClick={() => addNode("loadbalancer")}
+          className="bg-green-600 text-white px-3 py-1 rounded"
+        >
+          LB
         </button>
+
+        <button
+          onClick={() => addNode("queue")}
+          className="bg-orange-600 text-white px-3 py-1 rounded"
+        >
+          Queue
+        </button>
+
       </div>
 
-      <div className="space-y-3">
-        {displayNodes.map((node) => (
-          <div
-            key={node.id}
-            className={`p-4 bg-zinc-800 rounded border-2 ${getColor(node.status)}`}
-          >
-            <div className="font-semibold">{node.type.toUpperCase()}</div>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        fitView
+      >
+        <MiniMap />
+        <Controls />
+        <Background gap={16} />
+      </ReactFlow>
 
-            <div className="text-sm text-zinc-300">
-              Load: {node.load} / {node.capacity}
-            </div>
-
-            {node.status === "overloaded" && (
-              <div className="text-red-400 text-sm mt-1">
-                ⚠ Overloaded
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
