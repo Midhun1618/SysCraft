@@ -79,6 +79,11 @@ The simulator calculates key performance indicators:
 
 These metrics update dynamically as users modify architecture or traffic levels.
 
+### Working Example
+
+<img src="./screenshots/Screenshot (34).png" width="800"/>
+<img src="./screenshots/Screenshot (35).png" width="800"/>
+
 ### Overload Detection Example
 
 <img src="./screenshots/Screenshot (33).png" width="800"/>
