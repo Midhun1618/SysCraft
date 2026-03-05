@@ -90,7 +90,7 @@ These metrics update dynamically as users modify architecture or traffic levels.
 
 ## ⚙️ Installation
 
-Clone the repository: git clone https://github.com/Midhun1618/syscraft.git
+Clone the repository: git clone https://github.com/midhun1618/syscraft.git
 
 Navigate into the project,
 
